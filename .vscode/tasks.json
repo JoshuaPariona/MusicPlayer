@@ -1,0 +1,47 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++.exe compile active file",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-c",
+				"${file}",
+				"-I${workspaceFolder}\\include",
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "Compile cpp file"
+		},
+
+		{
+			"label": "C/C++: g++.exe build active file",
+			"type": "cppbuild",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+			"dependsOn": "C/C++: g++.exe compile active file",
+			"args": [
+				"${fileBasenameNoExtension}.o",
+				"-o",
+				"${fileDirname}\\${fileBasenameNoExtension}.exe",
+				"-L${workspaceFolder}\\lib",
+				"-lsfml-audio",
+				"-lsfml-graphics",
+				"-lsfml-window",
+				"-lsfml-system",
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"detail": "Link object files"
+		}
+	]
+}
