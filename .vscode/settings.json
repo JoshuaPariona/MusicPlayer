@@ -48,6 +48,15 @@
         "xlocale": "cpp",
         "xlocinfo": "cpp",
         "xmemory": "cpp",
-        "xstddef": "cpp"
+        "xstddef": "cpp",
+        "algorithm": "cpp",
+        "locale": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "string": "cpp",
+        "xlocbuf": "cpp",
+        "xlocmes": "cpp",
+        "xloctime": "cpp",
+        "xtree": "cpp"
     }
 }
