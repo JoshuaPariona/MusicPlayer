@@ -57,6 +57,19 @@
         "xlocbuf": "cpp",
         "xlocmes": "cpp",
         "xloctime": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "iomanip": "cpp",
+        "functional": "cpp",
+        "list": "cpp",
+        "xhash": "cpp",
+        "charconv": "cpp",
+        "filesystem": "cpp",
+        "format": "cpp",
+        "forward_list": "cpp",
+        "mutex": "cpp",
+        "ratio": "cpp",
+        "sstream": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     }
 }

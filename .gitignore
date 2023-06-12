@@ -1,5 +1,5 @@
-#directorys
+#directories
 
 #files
-main.exe
-main.o
+*.exe
+*.o

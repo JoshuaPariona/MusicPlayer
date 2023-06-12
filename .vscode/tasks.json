@@ -1,15 +1,19 @@
 {
 	"version": "2.0.0",
+	"variables": {
+		"appName": "musicPlayer"
+	},
 	"tasks": [
 		{
 			"type": "cppbuild",
-			"label": "C/C++: g++.exe compile active file",
+			"label": "C/C++: g++.exe src files",
 			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
 			"args": [
 				"-fdiagnostics-color=always",
-				"-c",
-				"${file}",
+				"-std=c++17",
 				"-I${workspaceFolder}\\include",
+				"-c",
+				"${workspaceFolder}\\src\\*.cpp",
 			],
 			"options": {
 				"cwd": "${fileDirname}"
@@ -18,23 +22,72 @@
 				"$gcc"
 			],
 			"group": "build",
-			"detail": "Compile cpp file"
+			"detail": "Compile cpp src files"
 		},
-
+		{
+			"type": "cppbuild",
+			"label": "C/C++: g++.exe compile active file",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+			"dependsOn": "C/C++: g++.exe src files",
+			"args": [
+				"-fdiagnostics-color=always",
+				"-std=c++17",
+				"-I${workspaceFolder}\\include",
+				"-c",
+				"${workspaceFolder}\\main.cpp"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build",
+			"detail": "Compile cpp main file"
+		},
+		{
+			"type": "shell",
+			"label": "Delete existing obj files",
+			"command": "del",
+			"dependsOn": "C/C++: g++.exe compile active file",
+			"args": [
+				"${workspaceFolder}\\build\\objs\\*.o"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"group": "build",
+			"detail": "Delete existing obj files"
+		},
+		{
+			"type": "shell",
+			"label": "Move obj files to obj folder",
+			"command": "move",
+			"dependsOn": "Delete existing obj files",
+			"args": [
+				"*.o",
+				"${workspaceFolder}\\build\\objs\\"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"group": "build",
+			"detail": "Move obj files to obj folder"
+		},
 		{
 			"label": "C/C++: g++.exe build active file",
 			"type": "cppbuild",
 			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
-			"dependsOn": "C/C++: g++.exe compile active file",
+			"dependsOn": "Move obj files to obj folder",
 			"args": [
-				"${fileBasenameNoExtension}.o",
 				"-o",
-				"${fileDirname}\\${fileBasenameNoExtension}.exe",
+				"${workspaceFolder}\\player.exe",
+				"${workspaceFolder}\\build\\objs\\*.o",
 				"-L${workspaceFolder}\\lib",
 				"-lsfml-audio",
 				"-lsfml-graphics",
 				"-lsfml-window",
-				"-lsfml-system",
+				"-lsfml-system"
 			],
 			"group": {
 				"kind": "build",
