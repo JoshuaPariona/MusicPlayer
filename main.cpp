@@ -1,78 +1,63 @@
-#include <SFML/Audio.hpp>
 #include <iostream>
-#include <iomanip>
-#include <string>
+#include <thread>
+#include <chrono>
 #include <conio.h> //eventos de teclado
+#include <filesystem>
 
 #include <Handler/FileManager.h>
 #include <Handler/Directive.h>
 #include <Handler/Config.h>
 #include <Handler/Terminal.h>
+#include <Handler/Player.h>
 
-bool playMusic(const std::string& filename) {
-    sf::Music music;
-    if (!music.openFromFile("resources/" + filename))
-        return false;
-
-    // Display music informations
-    std::cout << filename << ":" << std::endl;
-    std::cout << " " << music.getDuration().asSeconds() << " seconds"       << std::endl;
-    std::cout << " " << music.getSampleRate()           << " samples / sec" << std::endl;
-    std::cout << " " << music.getChannelCount()         << " channels"      << std::endl;
-
-    float total = music.getDuration().asSeconds();
-    float offset = 0.0f;
-    int len = 30;
-    int part = 0;
-    // Play it
-    music.play();
-
-    // Loop while the music is playing
-    while (music.getStatus() == sf::Music::Playing) {
-        // Leave some CPU time for other processes
-        sf::sleep(sf::milliseconds(100));
-        offset = music.getPlayingOffset().asSeconds();
-        // Display the playing position
-        std::cout << "\r" << std::fixed << std::setprecision(2) << offset << " ";
-        std::cout << "[";
-
-        part = (offset/total)*len;
-
-        for(int i = 0; i < part; i++)
-            std::cout << "=";
-        for(int i = part; i < len; i++)
-            std::cout << " ";
-        
-        std::cout << "] ";
-        std::cout << std::fixed << std::setprecision(2) << total;
-        std::cout << std::flush;
-    }
-    std::cout << std::endl << std::endl;
-    return true;
-}
-
-void strprint(std::string str) {
-    std::cout << str;
-}
-
-void terminalEvent(Terminal& system, int ch) {
+void terminalEvent(Terminal& terminal, Player& player, int ch) {
     switch (ch) {
         case 72: // Flecha hacia arriba
-            system.backwardsCursor();
+            terminal.backwardsCursor();
             break;
         case 80: // Flecha hacia abajo
-            system.forwardCursor();
+            terminal.forwardCursor();
             break;
         case 'q': // Carácter 'q' para salir del bucle
-        case 'Q':
-            system.stop();
+            player.stop_current();
+            terminal.stop();
             break;
-        case 'a':
-            system.addLine("linea+");
+
+        //larroy & rarrow to reebot & next
+
+        case 'n': //next in playlist
+            player.next();
+            break;
+
+        case 's': // play or resume music
+            player.play_current();
+            break;
+        case 'p': // Pause music
+            player.pause_current();
+            break;
+        case '\r': // Enter key, Select music
+            player.load(terminal.getLine(terminal.getCursorPos()));
+            break;
+        case 'a': // Enqueue music;
+            player.add_to_playlist(terminal.getLine(terminal.getCursorPos()));
             break;
         default:
-            // Otra tecla presionada, hacer algo si es necesario
             break;
+    }
+}
+
+std::string getFilename(std::string path) {
+    std::filesystem::path filePath(path);
+    return filePath.filename().string();
+}
+
+void updateMusicInfo(Terminal& terminal, Player& player ,int namePos, int barPos, int playlistPos) {
+    while (terminal.isRunning()) {
+        terminal.setLine(namePos, player.getCurrentMusic());
+        terminal.setLine(barPos, player.getProgressBar());
+        terminal.cut(playlistPos);
+        player.getPlayList().print(terminal.getBuffer(),&getFilename);
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }
 
@@ -91,21 +76,34 @@ int main(int argc, char** argv) {
     fm.typeFile(".mp3");
     fm.startSearch();
 
-    fm.getTree().print(strprint);
+    Terminal terminal;
+    terminal.addLine("\tExplorador de Archivos");
+    //Tree is the one to select
+    terminal.minRangePos();
+    fm.getTree().print(terminal.getBuffer());
+    terminal.maxRangePos();
+    // Not reachable
+    terminal.addLine("===========================================================");
+    terminal.addLine("\tEn Reproduccion:");
+    
+    Player player(fm.getTree());
+    int namePos = terminal.getSize();
+    int barPos = namePos + 1;
+    terminal.addLine(player.getCurrentMusic());
+    terminal.addLine(player.getProgressBar());
+    terminal.addLine("===========================================================");
+    terminal.addLine("\tPlay List:");
+    int playlistPos = terminal.getSize();
 
-    Terminal system;
-    system.addLine("linea1");
-    system.addLine("linea2");
-    system.addLine("linea3");
-    system.addLine("linea4");
-    system.start();
+    terminal.start(); 
+    std::thread updateThread(updateMusicInfo, std::ref(terminal), std::ref(player), namePos, barPos, playlistPos);
 
-    while (system.isRunning()) {
-        terminalEvent(system, getch());
+    while (terminal.isRunning()) {
+        terminalEvent(terminal, player, getch());
     }
 
-    
+    if (updateThread.joinable())
+        updateThread.join();
 
-    
     return EXIT_SUCCESS;
 }

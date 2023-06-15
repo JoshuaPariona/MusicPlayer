@@ -4,19 +4,25 @@
 #include <chrono>
 
 void Terminal::forwardCursor() {
-    if (cursorPos < lines.size()-1)
+    if (cursorPos < maxRange && cursorPos < lines.size()-1)
         cursorPos++;
 }
 
 void Terminal::backwardsCursor() {
-    if (cursorPos > 0)
+    if (cursorPos > minRange && cursorPos > 0)
         cursorPos--;
 }
 
-bool Terminal::setLine(int index, std::string& line) {
-    if (index < 0 || index >= lines.size()) {
-        return false;
+std::string Terminal::getLine(int index) {
+    if (index >= 0 && index < lines.size()) {
+        return lines[index];
     }
+    return "";
+}
+
+bool Terminal::setLine(int index, std::string line) {
+    if (index < 0 || index >= lines.size())
+        return false;
     lines[index] = line;
     return true;
 }
@@ -26,9 +32,15 @@ void Terminal::addLine(const std::string& line) {
 }
 
 void Terminal::highlightLine(int index) {
-    if (index >= 0 && index < lines.size()) {
+    if (index >= 0 && index < lines.size())
         cursorPos = index;
-    }
+}
+
+void Terminal::cut(int index) {
+    if (index >= lines.size() || index < 0)
+        return;
+
+    lines.resize(index);
 }
 
 void Terminal::print() {
@@ -73,7 +85,6 @@ void Terminal::updateLoop() {
 
 void Terminal::clearTerminal() {
     // Lógica para limpiar el terminal (depende del sistema operativo)
-    // Aquí se muestra un ejemplo sencillo
-    system("cls"); //FIXME
+    system("cls"); //FIXME:lokokokook
     //std::cout << "\033[2J\033[H"; // Código ANSI para borrar la pantalla y colocar el cursor en la posición inicial
 }

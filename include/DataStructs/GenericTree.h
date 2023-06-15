@@ -10,7 +10,8 @@ private:
     const T root;
     const GenericTree<T>* parent;
     mutable std::vector<GenericTree<T>> children;
-    void print(void (*printFunc)(T), int tab,const GenericTree<T>& node);
+    void print(void (*printFunc)(T), int tab, const GenericTree<T>& node);
+    void print(std::vector<T>& buffer, int tab, const GenericTree<T>& node);
 
 public:
     GenericTree(const T& data) : root(data), children({}), parent(nullptr) {}
@@ -27,6 +28,7 @@ public:
 
     void clear() {children.clear();}
     void print(void (*printFunc)(T)) {print(printFunc,0,*this);}
+    void print(std::vector<T>& buffer) {print(buffer,0,*this);}
 };
 
 #endif  // GENERICTREE_H

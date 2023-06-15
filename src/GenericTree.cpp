@@ -22,6 +22,16 @@ void GenericTree<T>::print(void (*printFunc)(T), int tab, const GenericTree<T>& 
 }
 
 template <typename T>
+void GenericTree<T>::print(std::vector<T>& buffer, int tab, const GenericTree<T>& node) {
+    std::string t = "";
+    for (int i = 0; i < tab; i++)
+        t += " ";
+    buffer.push_back(t + node.root);
+    for (GenericTree<T>& child : node.children)
+        print(buffer, tab + 1, child);
+}
+
+template <typename T>
 void GenericTree<T>::addChild(const T& child) {
     children.push_back(GenericTree<T>(child, this));
 }
