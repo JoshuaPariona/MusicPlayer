@@ -2,13 +2,14 @@
 #include <filesystem>
 #include <thread>
 #include <chrono>
+#include <mutex>
 #include <Handler/Player.h>
 #include <SFML/Audio.hpp>
 
 void Player::updateLoop() {
     float total = music.getDuration().asSeconds();
     float offset = 0.0f;
-    int len = 30;
+    int len = 47;
     int part = 0;
     std::string bar = "";
     while (music.getStatus() == sf::Music::Playing) {
@@ -27,9 +28,8 @@ void Player::updateLoop() {
     }
 
     if (music.getStatus() == sf::Music::Stopped) {
-        currentMusic = "Select a Music";
-        progressBar = "0:00 [                              ] 0:00";
-        
+        progressBar = "0:00 [                                               ] 0:00";
+        next_to_play = true;
     }
 }
 
@@ -113,11 +113,14 @@ void Player::add_to_playlist(const std::string& filename) {
 }
 
 void Player::next() {
+    std::lock_guard<std::mutex> lock(mtx);
     if (!playlist.empty()) {
         stop_current();
+        next_to_play = false;
         ready_to_play = music.openFromFile(playlist.front());
         std::filesystem::path p = playlist.popFront();
         currentMusic = p.filename().string();
         play_current();
     }
+    next_to_play = false;
 }

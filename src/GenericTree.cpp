@@ -25,7 +25,7 @@ template <typename T>
 void GenericTree<T>::print(std::vector<T>& buffer, int tab, const GenericTree<T>& node) {
     std::string t = "";
     for (int i = 0; i < tab; i++)
-        t += " ";
+        t += "   ";
     buffer.push_back(t + node.root);
     for (GenericTree<T>& child : node.children)
         print(buffer, tab + 1, child);

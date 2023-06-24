@@ -22,13 +22,9 @@ void terminalEvent(Terminal& terminal, Player& player, int ch) {
             player.stop_current();
             terminal.stop();
             break;
-
-        //larroy & rarrow to reebot & next
-
         case 'n': //next in playlist
             player.next();
             break;
-
         case 's': // play or resume music
             player.play_current();
             break;
@@ -48,7 +44,7 @@ void terminalEvent(Terminal& terminal, Player& player, int ch) {
 
 std::string getFilename(std::string path) {
     std::filesystem::path filePath(path);
-    return filePath.filename().string();
+    return "  " + filePath.filename().string();
 }
 
 void updateMusicInfo(Terminal& terminal, Player& player ,int namePos, int barPos, int playlistPos) {
@@ -57,6 +53,8 @@ void updateMusicInfo(Terminal& terminal, Player& player ,int namePos, int barPos
         terminal.setLine(barPos, player.getProgressBar());
         terminal.cut(playlistPos);
         player.getPlayList().print(terminal.getBuffer(),&getFilename);
+        if(player.next_to_play) //FIXME: not sincronysid
+            player.next();
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }
@@ -73,7 +71,6 @@ int main(int argc, char** argv) {
     fm.typeFile(".ogg");
     fm.typeFile(".wav");
     fm.typeFile(".flac");
-    fm.typeFile(".mp3");
     fm.startSearch();
 
     Terminal terminal;
@@ -83,7 +80,7 @@ int main(int argc, char** argv) {
     fm.getTree().print(terminal.getBuffer());
     terminal.maxRangePos();
     // Not reachable
-    terminal.addLine("===========================================================");
+    terminal.addLine("___________________________________________________________");
     terminal.addLine("\tEn Reproduccion:");
     
     Player player(fm.getTree());
@@ -91,7 +88,7 @@ int main(int argc, char** argv) {
     int barPos = namePos + 1;
     terminal.addLine(player.getCurrentMusic());
     terminal.addLine(player.getProgressBar());
-    terminal.addLine("===========================================================");
+    terminal.addLine("___________________________________________________________");
     terminal.addLine("\tPlay List:");
     int playlistPos = terminal.getSize();
 
@@ -100,6 +97,7 @@ int main(int argc, char** argv) {
 
     while (terminal.isRunning()) {
         terminalEvent(terminal, player, getch());
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 
     if (updateThread.joinable())
