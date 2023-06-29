@@ -18,8 +18,10 @@ void Directive::printHelp() {
     std::cout << "  --version  Display the version of the program" << std::endl;
     std::cout << std::endl;
     std::cout << "Program options:" << std::endl;
-    std::cout << "  H / Arrow Up     Move cursor upwards" << std::endl;
-    std::cout << "  P / Arrow Down   Move cursor downwards" << std::endl;
+    std::cout << "  Arrow Up         Move cursor upwards" << std::endl;
+    std::cout << "  Arrow Down       Move cursor downwards" << std::endl;
+    std::cout << "  Arrow left       Rewind playback" << std::endl;
+    std::cout << "  Arrow right      Forward playback" << std::endl;
     std::cout << "  q                Quit the program" << std::endl;
     std::cout << "  n                Play the next song in the playlist" << std::endl;
     std::cout << "  s                Play or resume music" << std::endl;
