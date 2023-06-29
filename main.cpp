@@ -18,6 +18,12 @@ void terminalEvent(Terminal& terminal, Player& player, int ch) {
         case 80: // Flecha hacia abajo
             terminal.forwardCursor();
             break;
+        case 77: // Flecha hacia dercha
+            player.jump();
+            break;
+        case 75: // Flecha hacia atras
+            player.back();
+            break;
         case 'q': // Carácter 'q' para salir del bucle
             player.stop_current();
             terminal.stop();
