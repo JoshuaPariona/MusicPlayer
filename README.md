@@ -2,7 +2,11 @@
 
 Proyecto como parte de la asignatura Estructura de Datos.
 
-Este proyecto es un reproductor de música que permite reproducir archivos de audio en diversos formatos. A continuación, se detallan los pasos para configurar el proyecto correctamente.
+Este proyecto es un reproductor de música que permite reproducir archivos de audio en diversos formatos (flac, ogg, wav), mp3 no disponible. A continuación, se detallan los pasos para configurar el proyecto correctamente.
+
+La compilacion de este proyecto esta destinado solo a sistemas windows.
+
+El compilador debe permitir el standar 17 o mayor
 
 # Requerimientos
 
@@ -22,18 +26,14 @@ Este proyecto es un reproductor de música que permite reproducir archivos de au
 
 3. Remplaza "command": "C:\\msys64\\mingw64\\bin\\g++.exe", a la ruta de tu compilador.
 
-## Run && Debug en Visual Studio Code
+## Compilacion
 
-1. Abre el archivo `.vscode/launch.json` en tu proyecto.
+1. Ejecuta la tarea principla de `.vscode/task.json`, con etiqueta: "C/C++: g++.exe build active file"
 
-2. Ubica y remplaza "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe", con la ruta de tu debugger gdb.
+2. Espera a que termine la compilación y se generará un archivo ejecutable
 
-## Compilacion y Buildeo por terminal
+## Uso
 
-1. En compliacion, usar "-c" e incluir el directorio `/include`:
-                g++ -c main.cpp -Iruta/de/proyecto/MusicPlayer/include
+1. Abre una terminal o en el mismo terminal de vscode, y dirigete hacia la ubicacion de "player.exe", y digita los siguiente > player <album_path>
 
-2. Luego en linkeo usar "-o" y linkear: 
-                g++ main.o -o main.exe -Lruta/de/proyecto/MusicPlayer/lib -lsfml-audio -lsfml-graphics -lsfml-window -lsfml-system
-
-3. Asegurate que tu g++ y el directorio `/bin` pertenesca al path. si no usar la direccion completa del compilador.
+2. Ejecuta player --help para mas información del funcionamiento.
