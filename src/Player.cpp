@@ -11,6 +11,7 @@ void Player::updateLoop() {
     int len = 47;
     int part = 0;
     std::string bar = "";
+    std::string tot = secondsToMinutes(total);
     while (music.getStatus() == sf::Music::Playing) {
         bar = "";
         offset = music.getPlayingOffset().asSeconds();
@@ -21,7 +22,7 @@ void Player::updateLoop() {
         for(int i = part; i < len; i++)
             bar += " ";
         bar += "] ";
-        bar += secondsToMinutes(total);
+        bar += tot;
         progressBar = bar;
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
@@ -117,7 +118,27 @@ void Player::add_front_playlist(const std::string& filename) {
     }
 }
 
-/*Se salta dos veces en la playlist*/
+void Player::jump() {
+    if (music.getStatus() == sf::Music::Playing) {
+        sf::Time currentOffset = music.getPlayingOffset();
+        sf::Time jumpDuration = sf::seconds(5);
+        sf::Time newOffset = currentOffset + jumpDuration;
+        music.setPlayingOffset(newOffset);
+    }
+}
+
+void Player::back() {
+    if (music.getStatus() == sf::Music::Playing) {
+        sf::Time currentOffset = music.getPlayingOffset();
+        sf::Time jumpDuration = sf::seconds(5);
+        sf::Time newOffset = currentOffset - jumpDuration;
+        if (newOffset < sf::Time::Zero) {
+            newOffset = sf::Time::Zero;  // Establecer el tiempo de reproducción en cero si es negativo
+        }
+        music.setPlayingOffset(newOffset);
+    }
+}
+
 void Player::next() {
     if (!playlist.empty()) {
         stop_current();
