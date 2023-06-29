@@ -37,6 +37,9 @@ void terminalEvent(Terminal& terminal, Player& player, int ch) {
         case 'a': // Enqueue music;
             player.add_to_playlist(terminal.getLine(terminal.getCursorPos()));
             break;
+        case 'f': // Enqueue back music;
+            player.add_front_playlist(terminal.getLine(terminal.getCursorPos()));
+            break;
         default:
             break;
     }
@@ -53,8 +56,6 @@ void updateMusicInfo(Terminal& terminal, Player& player ,int namePos, int barPos
         terminal.setLine(barPos, player.getProgressBar());
         terminal.cut(playlistPos);
         player.getPlayList().print(terminal.getBuffer(),&getFilename);
-        if(player.next_to_play) //FIXME: not sincronysid
-            player.next();
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 }

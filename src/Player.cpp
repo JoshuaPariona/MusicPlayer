@@ -2,7 +2,6 @@
 #include <filesystem>
 #include <thread>
 #include <chrono>
-#include <mutex>
 #include <Handler/Player.h>
 #include <SFML/Audio.hpp>
 
@@ -27,10 +26,8 @@ void Player::updateLoop() {
         std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
 
-    if (music.getStatus() == sf::Music::Stopped) {
+    if (music.getStatus() == sf::Music::Stopped)
         progressBar = "0:00 [                                               ] 0:00";
-        next_to_play = true;
-    }
 }
 
 std::string Player::trimString(const std::string& str) {
@@ -112,15 +109,21 @@ void Player::add_to_playlist(const std::string& filename) {
     }
 }
 
+void Player::add_front_playlist(const std::string& filename) {
+    std::string path = getPath(trimString(filename), path_tree);
+    std::filesystem::path p = path;
+    if (std::filesystem::exists(p) && !(std::filesystem::is_directory(p))) {
+        playlist.appendFront(path);
+    }
+}
+
+/*Se salta dos veces en la playlist*/
 void Player::next() {
-    std::lock_guard<std::mutex> lock(mtx);
     if (!playlist.empty()) {
         stop_current();
-        next_to_play = false;
         ready_to_play = music.openFromFile(playlist.front());
         std::filesystem::path p = playlist.popFront();
         currentMusic = p.filename().string();
         play_current();
     }
-    next_to_play = false;
 }

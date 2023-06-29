@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <thread>
-#include <mutex>
 #include <SFML/Audio.hpp>
 #include <DataStructs/Deque.h>
 #include <../src/Deque.cpp>
@@ -18,7 +17,6 @@ private:
     std::string currentMusic;
     Deque<std::string> playlist;
     std::thread updateThread;
-    std::mutex mtx;
     bool ready_to_play;
     void updateLoop();
     std::string trimString(const std::string& str);
@@ -26,8 +24,7 @@ private:
     std::string getPath(const std::string& filename, GenericTree<std::string>& parent);
 
 public:
-    bool next_to_play;
-    Player(GenericTree<std::string>& tree) : ready_to_play(false), next_to_play(false), path_tree(tree), currentMusic("Select a Music") {
+    Player(GenericTree<std::string>& tree) : ready_to_play(false), path_tree(tree), currentMusic("Select a Music") {
         progressBar = "0:00 [                                               ] 0:00";
     }
     ~Player() = default;
@@ -38,11 +35,9 @@ public:
     void pause_current();
     void stop_current();
     void add_to_playlist(const std::string& filename);
+    void add_front_playlist(const std::string& filename);
     void next();
-    /*
-    void front_enqueue();
-    void back_enqueue();
-    */
+    
     Deque<std::string>& getPlayList() {return playlist;}
     std::string getProgressBar() {return progressBar;}
     std::string getCurrentMusic() {return currentMusic;}

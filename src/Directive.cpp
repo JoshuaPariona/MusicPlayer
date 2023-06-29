@@ -9,8 +9,26 @@ void Directive::printVersion() {
 }
 
 void Directive::printHelp() {
-    std::cout << "Help message" << std::endl;
+    std::cout << "Usage:" << std::endl;
+    std::cout << "  player <folder_path>" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Directives:" << std::endl;
+    std::cout << "  --help     Display this help message" << std::endl;
+    std::cout << "  --credits  Display project credits" << std::endl;
+    std::cout << "  --version  Display the version of the program" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Program options:" << std::endl;
+    std::cout << "  H / Arrow Up     Move cursor upwards" << std::endl;
+    std::cout << "  P / Arrow Down   Move cursor downwards" << std::endl;
+    std::cout << "  q                Quit the program" << std::endl;
+    std::cout << "  n                Play the next song in the playlist" << std::endl;
+    std::cout << "  s                Play or resume music" << std::endl;
+    std::cout << "  p                Pause music" << std::endl;
+    std::cout << "  a                Enqueue music" << std::endl;
+    std::cout << "  f                Enqueue music to the front" << std::endl;
+    std::cout << "  Enter            Select music" << std::endl;
 }
+
 
 void Directive::printCredits() {
     std::cout << "Asignatura: Estructura de Datos" << std::endl;
